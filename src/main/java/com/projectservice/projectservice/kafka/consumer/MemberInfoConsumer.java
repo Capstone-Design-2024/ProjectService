@@ -28,7 +28,7 @@ public class MemberInfoConsumer {
     private String SIGNUP_EVENT;
 
     @Transactional
-    @KafkaListener(topics = "${topic.SIGNUP-EVENT}", groupId = "project-memberInfoConsumers", containerFactory = "kafkaListenerDefaultContainerFactory")
+    @KafkaListener(topics = "${topic.SIGNUP-EVENT}", groupId = "project-memberInfoConsumers", containerFactory = "kafkaListenerContainerFactory")
     public void memberInfoConsumer(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(record.value());
