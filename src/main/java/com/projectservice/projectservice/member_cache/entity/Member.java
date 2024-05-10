@@ -1,12 +1,17 @@
 package com.projectservice.projectservice.member_cache.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectservice.projectservice.baseTime.BaseTimeEntity;
 import com.projectservice.projectservice.common.enums.Role;
-import com.projectservice.projectservice.kafka.dto.SyncMemberInfoDto;
+import com.projectservice.projectservice.project.entity.Mark;
+import com.projectservice.projectservice.project.entity.Project;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +41,16 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "profileURL")
     private String profile_url;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Mark> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "maker", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Project> projects = new ArrayList<>();
+
+
 
     @Builder
     public Member(Long memberId, String email, String password, Role role, String name, String address, String profile_url) {
