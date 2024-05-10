@@ -1,0 +1,74 @@
+name: Docker Image Capstone_MEMBER_SERVICE CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: production application file setting
+        run: |
+          mkdir -p ./src/main/resources
+          touch ./src/main/resources/application.yml
+          echo ${{ secrets.MEMBER_SERVICE_YML }} | base64 --decode >> ./src/main/resources/application.yml
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Init with Gradle
+        uses: gradle/gradle-build-action@v2
+      - run: gradle init
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.5
+          arguments: build -x test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set timestamp
+        id: vars
+        run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build & Push to ECR
+        run: |
+          docker build -t project-service .
+          IMAGE_TAG="${{ secrets.AWS_ACCOUNT_NUM }}.dkr.ecr.ap-northeast-2.amazonaws.com/yhp-capstone-repository:project-service-${TIMESTAMP}"
+          docker tag project-service $IMAGE_TAG
+          docker push $IMAGE_TAG
+        env:
+          TIMESTAMP: ${{ env.TIMESTAMP }}
+
+      - name: Trigger Kustomize Repository Workflow
+        run: |
+          JSON_PAYLOAD=$(jq -n \
+            --arg image_tag "project-service-${TIMESTAMP}" \
+            --arg target_kusto "project-kustomize" \
+            '{event_type: "update-image-tag", client_payload: {image_tag: $image_tag, target_kusto: $target_kusto}}')
+          curl -X POST -u "Capstone-Design-2024:${{ secrets.G_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/Capstone-Design-2024/Manifest/dispatches \
+          -d "$JSON_PAYLOAD"
+        env:
+          TIMESTAMP: ${{ env.TIMESTAMP }}
