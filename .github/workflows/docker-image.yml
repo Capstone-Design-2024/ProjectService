@@ -1,4 +1,4 @@
-name: Docker Image Capstone_MEMBER_SERVICE CI
+name: Docker Image Capstone_PROJECT_SERVICE CI
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
         run: |
           mkdir -p ./src/main/resources
           touch ./src/main/resources/application.yml
-          echo ${{ secrets.MEMBER_SERVICE_YML }} | base64 --decode >> ./src/main/resources/application.yml
+          echo ${{ secrets.APPLICATION_YML }} | base64 --decode >> ./src/main/resources/application.yml
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3

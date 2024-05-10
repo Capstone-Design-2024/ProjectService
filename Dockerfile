@@ -6,4 +6,4 @@ COPY ${JAR_FILE} projectService.jar
 
 EXPOSE 9002
 
-ENTRYPOINT ["java","-jar","memberService.jar"]
+ENTRYPOINT ["java","-jar","projectService.jar"]
