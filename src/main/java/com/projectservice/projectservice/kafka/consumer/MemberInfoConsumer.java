@@ -43,6 +43,8 @@ public class MemberInfoConsumer {
                                                                 .profileUrl(data.get("profile_url").toString())
                                                                 .name(data.get("name").toString())
                                                                 .build();
+        log.info(syncMemberInfoDto.getMemberId().toString());
+        log.info("########################################pahn");
         Member member = syncMemberInfoDto.toEntity();
         memberRepository.save(member);
     }

@@ -18,9 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name="member")
 public class Member extends BaseTimeEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column(name = "email", unique = true)
@@ -44,7 +44,7 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Mark> likes = new ArrayList<>();
+    private List<Mark> marks = new ArrayList<>();
 
     @OneToMany(mappedBy = "maker", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -53,6 +53,7 @@ public class Member extends BaseTimeEntity {
 
 
     @Builder
+
     public Member(Long memberId, String email, String password, Role role, String name, String address, String profile_url) {
         this.memberId = memberId;
         this.email = email;
@@ -62,6 +63,4 @@ public class Member extends BaseTimeEntity {
         this.address = address;
         this.profile_url = profile_url;
     }
-
-
 }

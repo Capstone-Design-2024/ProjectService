@@ -4,7 +4,5 @@ package com.projectservice.projectservice.member_cache.repository;
 import com.projectservice.projectservice.member_cache.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 public interface MemberRepository extends JpaRepository<Member, Long> {
 }
