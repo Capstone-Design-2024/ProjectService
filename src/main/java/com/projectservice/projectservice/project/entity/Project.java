@@ -3,7 +3,9 @@ package com.projectservice.projectservice.project.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectservice.projectservice.member_cache.entity.Member;
+import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,5 +69,18 @@ public class Project {
         this.contactPhone = contactPhone;
         this.contactEmail = contactEmail;
         this.price = price;
+    }
+
+    @Transactional
+    public Project updateProjectExceptThumbnail(ReqCreateProjectExceptThumbnailDto reqCreateProjectExceptThumbnailDto) {
+        this.title = reqCreateProjectExceptThumbnailDto.getTitle();
+        this.description = reqCreateProjectExceptThumbnailDto.getDescription();
+        this.category = reqCreateProjectExceptThumbnailDto.getCategory();
+        this.goalAmount = reqCreateProjectExceptThumbnailDto.getGoalAmount();
+        this.deadLine = reqCreateProjectExceptThumbnailDto.getDeadLine();
+        this.contactPhone = reqCreateProjectExceptThumbnailDto.getContactPhone();
+        this.contactEmail = reqCreateProjectExceptThumbnailDto.getContactEmail();
+        this.price = reqCreateProjectExceptThumbnailDto.getPrice();
+        return this;
     }
 }

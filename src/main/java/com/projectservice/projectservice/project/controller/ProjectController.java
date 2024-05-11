@@ -1,8 +1,8 @@
 package com.projectservice.projectservice.project.controller;
 
 import com.projectservice.projectservice.common.dto.Message;
-import com.projectservice.projectservice.handler.CustomException;
 import com.projectservice.projectservice.handler.StatusCode;
+import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
 import com.projectservice.projectservice.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +18,19 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping("/init")
-    public ResponseEntity<Message> login() {
+    public ResponseEntity<Message> getEmptyProjectId() {
         return ResponseEntity.ok(new Message(StatusCode.OK, projectService.initProject(getAuthorizer())));
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<Message> registryProject(@RequestBody ReqCreateProjectExceptThumbnailDto reqCreateProjectExceptThumbnailDto) {
+        projectService.createProject(getAuthorizer(),reqCreateProjectExceptThumbnailDto);
+        return ResponseEntity.ok(new Message(StatusCode.OK));
+    }
+
+    @GetMapping("/own")
+    public ResponseEntity<Message> listOwnProject() {
+        return ResponseEntity.ok(new Message(StatusCode.OK, projectService.getOwnProject(getAuthorizer())));
     }
 
 }
