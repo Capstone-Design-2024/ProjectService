@@ -73,7 +73,6 @@ public class S3ServiceImpl implements S3Service {
     private String uploadImageToS3(MultipartFile image) throws IOException {
         String originalFilename = image.getOriginalFilename(); //원본 파일 명
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".")); //확장자 명
-
         String s3FileName = UUID.randomUUID().toString().substring(0, 10) + originalFilename; //변경된 파일 명
 
         InputStream is = image.getInputStream();
@@ -85,11 +84,15 @@ public class S3ServiceImpl implements S3Service {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
         try{
+            System.out.println("hello");
             PutObjectRequest putObjectRequest =
                     new PutObjectRequest(bucketName, s3FileName, byteArrayInputStream, metadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead);
+            System.out.println(putObjectRequest);
             amazonS3.putObject(putObjectRequest); // put image to S3
+
         }catch (Exception e){
+            e.printStackTrace();
             throw new CustomException(StatusCode.MALFORMED);
         }finally {
             byteArrayInputStream.close();

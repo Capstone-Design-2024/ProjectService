@@ -5,9 +5,13 @@ import com.projectservice.projectservice.handler.StatusCode;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
 import com.projectservice.projectservice.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 import static com.projectservice.projectservice.security.JwtInfoExtractor.getAuthorizer;
 
@@ -31,6 +35,12 @@ public class ProjectController {
     @GetMapping("/own")
     public ResponseEntity<Message> listOwnProject() {
         return ResponseEntity.ok(new Message(StatusCode.OK, projectService.getOwnProject(getAuthorizer())));
+    }
+
+    @PostMapping(value = "/thumbnail/{projectId}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Message> uploadProjectThumbnail(@PathVariable Long projectId,@RequestPart(value = "image", required = false) MultipartFile image) {
+        projectService.updateThumbnailAddress(getAuthorizer(), image, projectId);
+        return ResponseEntity.ok(new Message(StatusCode.OK));
     }
 
 }

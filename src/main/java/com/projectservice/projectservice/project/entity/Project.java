@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectservice.projectservice.member_cache.entity.Member;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
+import com.projectservice.projectservice.project.dto.ResOwnProjectDto;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
@@ -48,7 +49,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Tag> tage = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "maker_id")
@@ -82,5 +83,25 @@ public class Project {
         this.contactEmail = reqCreateProjectExceptThumbnailDto.getContactEmail();
         this.price = reqCreateProjectExceptThumbnailDto.getPrice();
         return this;
+    }
+
+    @Transactional
+    public void updateThumbnailUrl(String fileUrl) {
+        this.thumbnail = fileUrl;
+    }
+
+    public ResOwnProjectDto toResOwnProjectDto() {
+        return ResOwnProjectDto.builder()
+                .projectId(this.projectId)
+                .title(this.title)
+                .description(this.description)
+                .category(this.category)
+                .goalAmount(this.goalAmount)
+                .deadLine(this.deadLine)
+                .contactEmail(this.contactEmail)
+                .contactPhone(this.contactPhone)
+                .price(this.price)
+                .thumbnail(this.thumbnail)
+                .build();
     }
 }
