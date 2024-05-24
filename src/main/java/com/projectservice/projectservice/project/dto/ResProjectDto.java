@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor
-public class ResOwnProjectDto {
+public class ResProjectDto {
     private Long projectId;
     private String title;
     private String description;
@@ -18,10 +18,11 @@ public class ResOwnProjectDto {
     private String contactPhone;
     private String contactEmail;
     private Long price;
+    private String makerName;
     private String thumbnail;
 
     @Builder
-    public ResOwnProjectDto(Long projectId, String title, String description, String category, Long goalAmount, Timestamp deadLine, String contactPhone, String contactEmail, Long price, String thumbnail) {
+    public ResProjectDto(Long projectId, String title, String description, String category, Long goalAmount, Timestamp deadLine, String contactPhone, String contactEmail, Long price, String makerName, String thumbnail) {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
@@ -31,6 +32,7 @@ public class ResOwnProjectDto {
         this.contactPhone = contactPhone;
         this.contactEmail = contactEmail;
         this.price = price;
+        this.makerName = makerName;
         this.thumbnail = thumbnail;
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.projectservice.projectservice.member_cache.entity.Member;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
-import com.projectservice.projectservice.project.dto.ResOwnProjectDto;
+import com.projectservice.projectservice.project.dto.ResProjectDto;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
@@ -90,8 +90,9 @@ public class Project {
         this.thumbnail = fileUrl;
     }
 
-    public ResOwnProjectDto toResOwnProjectDto() {
-        return ResOwnProjectDto.builder()
+    public ResProjectDto toResProjectDto() {
+        return ResProjectDto.builder()
+                .makerName(this.maker.getName())
                 .projectId(this.projectId)
                 .title(this.title)
                 .description(this.description)

@@ -37,6 +37,11 @@ public class ProjectController {
         return ResponseEntity.ok(new Message(StatusCode.OK, projectService.getOwnProject(getAuthorizer())));
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Message> listProjects() {
+        return ResponseEntity.ok(new Message(StatusCode.OK, projectService.getAllProjects()));
+    }
+
     @PostMapping(value = "/thumbnail/{projectId}", consumes = {"multipart/form-data"})
     public ResponseEntity<Message> uploadProjectThumbnail(@PathVariable Long projectId,@RequestPart(value = "image", required = false) MultipartFile image) {
         projectService.updateThumbnailAddress(getAuthorizer(), image, projectId);

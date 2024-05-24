@@ -6,7 +6,7 @@ import com.projectservice.projectservice.handler.StatusCode;
 import com.projectservice.projectservice.member_cache.entity.Member;
 import com.projectservice.projectservice.member_cache.repository.MemberRepository;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
-import com.projectservice.projectservice.project.dto.ResOwnProjectDto;
+import com.projectservice.projectservice.project.dto.ResProjectDto;
 import com.projectservice.projectservice.project.entity.Project;
 import com.projectservice.projectservice.project.repository.ProjectRepository;
 import com.projectservice.projectservice.security.dto.AuthorizerDto;
@@ -52,12 +52,21 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public List<ResOwnProjectDto> getOwnProject(AuthorizerDto authorizerDto) {
+    public List<ResProjectDto> getOwnProject(AuthorizerDto authorizerDto) {
         Member maker = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
 
         return projectRepository.findAllByMaker(maker)
-                .stream()                           // Convert collection to Stream
-                .map(p -> p.toResOwnProjectDto())   // Transform each project to ResOwnProjectDto
+                .stream()
+                .map(p -> p.toResProjectDto())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ResProjectDto> getAllProjects() {
+        return projectRepository.findAll()
+                .stream()
+                .map(p -> p.toResProjectDto())
+                .filter((pd) -> pd.getMakerName() != null)
                 .collect(Collectors.toList());
     }
 

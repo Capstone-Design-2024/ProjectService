@@ -22,7 +22,6 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
         String exception = (String) request.getAttribute("exception");
         StatusCode statusCode;
 
-
         if(exception == null || exception.equals("NullPointerException")) {
             statusCode = StatusCode.UNAUTHORIZED;
             setResponse(response, statusCode);
