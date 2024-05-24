@@ -63,6 +63,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public List<ResProjectDto> getAllProjects() {
+        System.out.println("");
         return projectRepository.findAll()
                 .stream()
                 .map(p -> p.toResProjectDto())
