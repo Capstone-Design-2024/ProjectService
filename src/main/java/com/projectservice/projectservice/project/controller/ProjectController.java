@@ -37,7 +37,7 @@ public class ProjectController {
         return ResponseEntity.ok(new Message(StatusCode.OK, projectService.getOwnProject(getAuthorizer())));
     }
 
-    @GetMapping("/")
+    @GetMapping("/p/other-project")
     public ResponseEntity<Message> listProjects() {
         return ResponseEntity.ok(new Message(StatusCode.OK, projectService.getAllProjects()));
     }
