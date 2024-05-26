@@ -66,8 +66,8 @@ public class ProjectServiceImpl implements ProjectService{
         System.out.println("");
         return projectRepository.findAll()
                 .stream()
+                .filter((p) -> p.getMaker() != null)
                 .map(p -> p.toResProjectDto())
-                .filter((pd) -> pd.getMakerName() != null)
                 .collect(Collectors.toList());
     }
 
