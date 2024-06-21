@@ -21,7 +21,6 @@ public class ReqCreateProjectExceptThumbnailDto {
     private Long price;
 
     @Builder
-
     public ReqCreateProjectExceptThumbnailDto(Long projectId, String title, String description, String category, Long goalAmount, Timestamp deadLine, String contactPhone, String contactEmail, Long price) {
         this.projectId = projectId;
         this.title = title;

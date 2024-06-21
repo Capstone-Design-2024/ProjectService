@@ -3,8 +3,11 @@ package com.projectservice.projectservice.project.service;
 import com.projectservice.projectservice.aws.s3.service.S3Service;
 import com.projectservice.projectservice.handler.CustomException;
 import com.projectservice.projectservice.handler.StatusCode;
+import com.projectservice.projectservice.kafka.producer.NFTRegistryProducer;
 import com.projectservice.projectservice.member_cache.entity.Member;
 import com.projectservice.projectservice.member_cache.repository.MemberRepository;
+import com.projectservice.projectservice.pinata.dto.ResIPFSUploadDto;
+import com.projectservice.projectservice.pinata.service.PinataService;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
 import com.projectservice.projectservice.project.dto.ResProjectDto;
 import com.projectservice.projectservice.project.entity.Project;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +29,9 @@ public class ProjectServiceImpl implements ProjectService{
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
+    private final PinataService pinataService;
+    private final NFTRegistryProducer nftRegistryProducer;
+
 
     @Override
     public Long initProject(AuthorizerDto authorizerDto) {
@@ -78,5 +85,18 @@ public class ProjectServiceImpl implements ProjectService{
         Project project = projectRepository.findByMakerAndProjectId(maker, projectId).orElseThrow(()->{throw new CustomException(StatusCode.NOT_INITIATED_PROJECT);});
         String uploadedUrl = s3Service.upload(file);
         project.updateThumbnailUrl(uploadedUrl);
+    }
+
+    @Override
+    public void uploadImgToIPFS(AuthorizerDto authorizerDto, MultipartFile file, Long projectId) {
+        Member maker = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
+        Project project = projectRepository.findByMakerAndProjectId(maker, projectId).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
+        ResIPFSUploadDto imgHashValue = pinataService.upload(file, project.getTitle());
+
+//        nftRegistryProducer.produceNFTRegistry(project.getTitle(), imgHashValue);
+    }
+
+    private String ipfsURIEncoder(String ipfsHash) {
+        return "" + ipfsHash;
     }
 }

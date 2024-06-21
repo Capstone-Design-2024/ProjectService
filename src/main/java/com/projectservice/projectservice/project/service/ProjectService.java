@@ -5,6 +5,7 @@ import com.projectservice.projectservice.project.dto.ResProjectDto;
 import com.projectservice.projectservice.security.dto.AuthorizerDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProjectService {
@@ -17,4 +18,6 @@ public interface ProjectService {
 
     List<ResProjectDto> getAllProjects();
     void updateThumbnailAddress(AuthorizerDto authorizerDto, MultipartFile file, Long projectId);
+
+    void uploadImgToIPFS(AuthorizerDto authorizerDto, MultipartFile file, Long projectId) throws IOException;
 }

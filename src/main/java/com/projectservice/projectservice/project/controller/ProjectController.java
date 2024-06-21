@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static com.projectservice.projectservice.security.JwtInfoExtractor.getAuthorizer;
@@ -29,6 +30,13 @@ public class ProjectController {
     @PostMapping("/registration")
     public ResponseEntity<Message> registryProject(@RequestBody ReqCreateProjectExceptThumbnailDto reqCreateProjectExceptThumbnailDto) {
         projectService.createProject(getAuthorizer(),reqCreateProjectExceptThumbnailDto);
+        return ResponseEntity.ok(new Message(StatusCode.OK));
+    }
+
+    @PostMapping(value = "/nft/registration/{projectId}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Message> registryProjectNFT(@PathVariable Long projectId,@RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        System.out.println("Controller first in");
+        projectService.uploadImgToIPFS(getAuthorizer(),image,projectId);
         return ResponseEntity.ok(new Message(StatusCode.OK));
     }
 
