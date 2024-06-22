@@ -101,6 +101,6 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     private String ipfsURIEncoder(String ipfsHash) {
-        return "https://ipfs.io/ipfs/" + ipfsHash;
+        return "ipfs://" + ipfsHash;
     }
 }
