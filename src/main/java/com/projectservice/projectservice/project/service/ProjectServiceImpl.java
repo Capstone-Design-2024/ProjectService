@@ -89,14 +89,18 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public void uploadImgToIPFS(AuthorizerDto authorizerDto, MultipartFile file, Long projectId) {
-        Member maker = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
-        Project project = projectRepository.findByMakerAndProjectId(maker, projectId).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
+        Member maker = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(() -> {
+            throw new CustomException(StatusCode.FORBIDDEN);
+        });
+        Project project = projectRepository.findByMakerAndProjectId(maker, projectId).orElseThrow(() -> {
+            throw new CustomException(StatusCode.FORBIDDEN);
+        });
         ResIPFSUploadDto imgHashValue = pinataService.upload(file, project.getTitle());
 
-//        nftRegistryProducer.produceNFTRegistry(project.getTitle(), imgHashValue);
+        nftRegistryProducer.produceNFTRegistry(project.getTitle(), ipfsURIEncoder(imgHashValue.getIpfsHash()), maker.getMemberId(), project.getProjectId(), project.getPrice(), project.getDescription());
     }
 
     private String ipfsURIEncoder(String ipfsHash) {
-        return "" + ipfsHash;
+        return "https://ipfs.io/ipfs/" + ipfsHash;
     }
 }

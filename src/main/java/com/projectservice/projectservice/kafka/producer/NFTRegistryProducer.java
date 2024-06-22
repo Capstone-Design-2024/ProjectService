@@ -22,8 +22,8 @@ public class NFTRegistryProducer {
     @Value("${topic.NFT-REGISTRY-EVENT}")
     private String NFT_REGISTRY_EVENT;
 
-    public void produceNFTRegistry(String title, String ipfsImgURI, String makerAddress, Long projectId, Long price) {
-        sendMessage(makeMessage(makeData(title, ipfsImgURI, makerAddress, projectId, price)));
+    public void produceNFTRegistry(String title, String ipfsImgURI, Long makerId, Long projectId, Long price, String description) {
+        sendMessage(makeMessage(makeData(title, ipfsImgURI, makerId, projectId, price, description)));
     }
 
     private void sendMessage(String data) {
@@ -31,13 +31,14 @@ public class NFTRegistryProducer {
         this.kafkaTemplate.send(NFT_REGISTRY_EVENT, data);
     }
 
-    private Map<String, Object> makeData(String title, String ipfsImgURI, String makerAddress, Long projectId, Long price) {
+    private Map<String, Object> makeData(String title, String ipfsImgURI, Long makerId, Long projectId, Long price, String description) {
         Map<String, Object> data = new HashMap<>();
         data.put("title", title);
         data.put("image_uri", ipfsImgURI);
-        data.put("maker_address", makerAddress);
+        data.put("maker_id", makerId);
         data.put("project_id", projectId);
         data.put("price", price);
+        data.put("description", description);
 
         return data;
     }
