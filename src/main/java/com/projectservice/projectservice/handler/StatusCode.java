@@ -20,6 +20,7 @@ public enum StatusCode {
     FAILED_SIGNUP(400, "회원가입에 실패하였습니다.", HttpStatus.BAD_REQUEST),
 
     REGISTERED_EMAIL(400, "등록된 회원입니다.", HttpStatus.BAD_REQUEST),
+    DUPLICATED_PROJECT_TITLE(400, "이미 등록된 프로젝트 명입니다.", HttpStatus.BAD_REQUEST),
     NOT_FOUND(404, "일치하는 정보가 없습니다.", HttpStatus.NOT_FOUND),
     FAILED_REQUEST(400, "요청에 실패하였습니다.", HttpStatus.BAD_REQUEST),
     NOT_INITIATED_PROJECT(400, "초기화되지 않은 프로젝트입니다. 빈 프로젝트 ID를 우선 발급받으십시오.", HttpStatus.BAD_REQUEST),

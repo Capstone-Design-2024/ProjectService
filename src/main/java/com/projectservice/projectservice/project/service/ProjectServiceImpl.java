@@ -51,8 +51,9 @@ public class ProjectServiceImpl implements ProjectService{
     @Transactional
     public void createProject(AuthorizerDto authorizerDto,ReqCreateProjectExceptThumbnailDto reqCreateProjectExceptThumbnailDto) {
         Member maker = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
-        Project project = projectRepository.findById(reqCreateProjectExceptThumbnailDto.getProjectId()).orElseThrow(()->{throw new CustomException(StatusCode.NOT_INITIATED_PROJECT);});
+        Project project = projectRepository.findProjectByProjectId(reqCreateProjectExceptThumbnailDto.getProjectId()).orElseThrow(()->{throw new CustomException(StatusCode.NOT_INITIATED_PROJECT);});
         if (!project.getTitle().equals(authorizerDto.getMemberId().toString())) throw new CustomException(StatusCode.ALREADY_CREATED_PROJECT);
+        projectRepository.findByTitle(reqCreateProjectExceptThumbnailDto.getTitle()).ifPresent(p -> {throw new CustomException(StatusCode.DUPLICATED_PROJECT_TITLE);});
 
         project.updateProjectExceptThumbnail(reqCreateProjectExceptThumbnailDto);
         project.addMaker(maker);
@@ -70,7 +71,6 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public List<ResProjectDto> getAllProjects() {
-        System.out.println("");
         return projectRepository.findAll()
                 .stream()
                 .filter((p) -> p.getMaker() != null)
