@@ -15,11 +15,15 @@ import com.projectservice.projectservice.project.repository.ProjectRepository;
 import com.projectservice.projectservice.security.dto.AuthorizerDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +35,7 @@ public class ProjectServiceImpl implements ProjectService{
     private final S3Service s3Service;
     private final PinataService pinataService;
     private final NFTRegistryProducer nftRegistryProducer;
-
+    private final RestTemplate restTemplate;
 
     @Override
     public Long initProject(AuthorizerDto authorizerDto) {
@@ -98,6 +102,14 @@ public class ProjectServiceImpl implements ProjectService{
         ResIPFSUploadDto imgHashValue = pinataService.upload(file, project.getTitle());
 
         nftRegistryProducer.produceNFTRegistry(project.getTitle(), ipfsURIEncoder(imgHashValue.getIpfsHash()), maker.getMemberId(), project.getProjectId(), project.getPrice(), project.getDescription());
+    }
+
+    @Override
+    public ResponseEntity getS3ImageFromURL(AuthorizerDto authorizerDto, String s3URL) {
+        memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(() -> {throw new CustomException(StatusCode.FORBIDDEN);});
+        ResponseEntity<byte[]> responseEntity = restTemplate.getForEntity(s3URL, byte[].class);
+
+        return responseEntity;
     }
 
     private String ipfsURIEncoder(String ipfsHash) {

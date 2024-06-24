@@ -3,6 +3,8 @@ package com.projectservice.projectservice.project.service;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
 import com.projectservice.projectservice.project.dto.ResProjectDto;
 import com.projectservice.projectservice.security.dto.AuthorizerDto;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,4 +22,7 @@ public interface ProjectService {
     void updateThumbnailAddress(AuthorizerDto authorizerDto, MultipartFile file, Long projectId);
 
     void uploadImgToIPFS(AuthorizerDto authorizerDto, MultipartFile file, Long projectId) throws IOException;
+
+    ResponseEntity getS3ImageFromURL(AuthorizerDto authorizerDto, String s3URL);
+
 }
