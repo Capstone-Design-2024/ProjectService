@@ -23,4 +23,5 @@ public class ResIPFSUploadDto {
         this.pinSize = pinSize;
         this.timestamp = timestamp;
     }
+    // for test
 }
