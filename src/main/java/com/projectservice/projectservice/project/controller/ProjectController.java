@@ -2,6 +2,8 @@ package com.projectservice.projectservice.project.controller;
 
 import com.projectservice.projectservice.common.dto.Message;
 import com.projectservice.projectservice.handler.StatusCode;
+import com.projectservice.projectservice.pinata.dto.ResIPFSJsonDto;
+import com.projectservice.projectservice.pinata.service.PinataService;
 import com.projectservice.projectservice.project.dto.ReqCreateProjectExceptThumbnailDto;
 import com.projectservice.projectservice.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import static com.projectservice.projectservice.security.JwtInfoExtractor.getAut
 @RequestMapping("/project")
 public class ProjectController {
     private final ProjectService projectService;
+    private final PinataService pinataService;
 
     @PostMapping("/init")
     public ResponseEntity<Message> getEmptyProjectId() {
@@ -76,6 +79,11 @@ public class ProjectController {
                 .headers(headers)
                 .contentLength(responseEntity.getBody().length)
                 .body(byteArrayResource);
+    }
+
+    @PostMapping(value = "/token-resolve")
+    public ResponseEntity<ResIPFSJsonDto> tokenResolve(@RequestBody HashMap<String, String> tokenUri) {
+        return pinataService.tokenResolver(tokenUri.get("tokenURI"));
     }
 
 }

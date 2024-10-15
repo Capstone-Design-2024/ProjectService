@@ -1,5 +1,6 @@
 package com.projectservice.projectservice.pinata.service;
 
+import com.projectservice.projectservice.pinata.dto.ResIPFSJsonDto;
 import com.projectservice.projectservice.pinata.dto.ResIPFSUploadDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,17 @@ public class PinataService {
 
     }
 
+    public ResponseEntity tokenResolver(String tokenURI) {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<ResIPFSJsonDto> response = restTemplate.exchange(
+                tokenURI,
+                HttpMethod.GET,
+                entity,
+                ResIPFSJsonDto.class
+        );
+        return response;
+    }
 
 
     private ByteArrayResource convert(MultipartFile file) throws IOException {
