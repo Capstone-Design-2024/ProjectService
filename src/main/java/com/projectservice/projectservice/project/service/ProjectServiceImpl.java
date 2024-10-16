@@ -112,6 +112,12 @@ public class ProjectServiceImpl implements ProjectService{
         return responseEntity;
     }
 
+    @Override
+    public Boolean isMyProject(AuthorizerDto authorizerDto, Long projectId) {
+        Member maker = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(()->{throw new CustomException(StatusCode.FORBIDDEN);});
+        return projectRepository.existsProjectByMakerAndProjectId(maker, projectId);
+    }
+
     private String ipfsURIEncoder(String ipfsHash) {
         return "ipfs://" + ipfsHash;
     }

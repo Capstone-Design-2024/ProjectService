@@ -87,4 +87,9 @@ public class ProjectController {
         return ResponseEntity.ok(new Message(StatusCode.OK, pinataService.tokenResolver(tokenURI.get("tokenURI"))));
     }
 
+    @GetMapping(value = "/is-own/{projectId}")
+    public ResponseEntity<Message> checkProjectOwner(@PathVariable Long projectId) {
+        return ResponseEntity.ok(new Message(StatusCode.OK, projectService.isMyProject(getAuthorizer(), projectId)));
+    }
+
 }

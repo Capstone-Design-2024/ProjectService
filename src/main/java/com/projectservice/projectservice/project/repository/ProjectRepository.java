@@ -17,5 +17,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findProjectByProjectId(Long projectId);
     List<Project> findAllByMaker(Member maker);
 
+    Boolean existsProjectByMakerAndProjectId(Member member, Long projectId);
 
 }

@@ -25,4 +25,6 @@ public interface ProjectService {
 
     ResponseEntity getS3ImageFromURL(AuthorizerDto authorizerDto, String s3URL);
 
+    Boolean isMyProject(AuthorizerDto authorizerDto, Long projectId);
+
 }
