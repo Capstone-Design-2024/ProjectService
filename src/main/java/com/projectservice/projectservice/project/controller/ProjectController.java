@@ -81,9 +81,10 @@ public class ProjectController {
                 .body(byteArrayResource);
     }
 
+
     @PostMapping(value = "/token-resolve")
-    public ResponseEntity<ResIPFSJsonDto> tokenResolve(@RequestBody HashMap<String, String> tokenUri) {
-        return pinataService.tokenResolver(tokenUri.get("tokenURI"));
+    public ResponseEntity<Message> tokenResolve(@RequestBody HashMap<String, String> tokenURI) {
+        return ResponseEntity.ok(new Message(StatusCode.OK, pinataService.tokenResolver(tokenURI.get("tokenURI"))));
     }
 
 }

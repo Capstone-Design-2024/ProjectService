@@ -84,6 +84,7 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
         return source;
     }
 
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()

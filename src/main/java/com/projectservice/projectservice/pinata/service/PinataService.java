@@ -48,7 +48,7 @@ public class PinataService {
 
     }
 
-    public ResponseEntity tokenResolver(String tokenURI) {
+    public ResIPFSJsonDto tokenResolver(String tokenURI) {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<ResIPFSJsonDto> response = restTemplate.exchange(
@@ -57,7 +57,7 @@ public class PinataService {
                 entity,
                 ResIPFSJsonDto.class
         );
-        return response;
+        return response.getBody();
     }
 
 
