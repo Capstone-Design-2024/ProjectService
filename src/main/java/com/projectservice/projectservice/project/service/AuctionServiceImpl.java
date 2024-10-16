@@ -6,9 +6,12 @@ import com.projectservice.projectservice.member_cache.entity.Member;
 import com.projectservice.projectservice.member_cache.repository.MemberRepository;
 import com.projectservice.projectservice.project.dto.ReqCreateAuctionDto;
 import com.projectservice.projectservice.project.dto.ResAuctionDto;
+import com.projectservice.projectservice.project.dto.ResBalanceDto;
 import com.projectservice.projectservice.project.entity.Auction;
+import com.projectservice.projectservice.project.entity.Balance;
 import com.projectservice.projectservice.project.entity.Project;
 import com.projectservice.projectservice.project.repository.AuctionRepository;
+import com.projectservice.projectservice.project.repository.BalanceRepository;
 import com.projectservice.projectservice.project.repository.ProjectRepository;
 import com.projectservice.projectservice.security.dto.AuthorizerDto;
 import jakarta.transaction.Transactional;
@@ -24,6 +27,7 @@ public class AuctionServiceImpl implements AuctionService{
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
+    private final BalanceRepository balanceRepository;
 
     /**
      * @ToDo
@@ -42,6 +46,56 @@ public class AuctionServiceImpl implements AuctionService{
         auction.addMember(member);
         auction.addProject(project);
         auctionRepository.save(auction);
+    }
+
+    @Override
+    @Transactional
+    public void buyBidAuction(Long auctionId, AuthorizerDto authorizerDto) {
+        Member member = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(() -> {
+            throw new CustomException(StatusCode.NOT_FOUND);
+        });
+        Auction auction = auctionRepository.findById(auctionId).orElseThrow(() -> {
+            throw new CustomException(StatusCode.NOT_FOUND);
+        });
+        if (!auction.getType().equals("BID")) throw new CustomException(StatusCode.FAILED_REQUEST);
+
+        Balance balance = new Balance();
+        balance.addMember(member);
+        balance.addProject(auction.getProject());
+
+        balanceRepository.save(balance);
+        auctionRepository.delete(auction);
+    }
+
+    @Override
+    @Transactional
+    public void sellAskAuction(Long auctionId, AuthorizerDto authorizerDto) {
+        Auction auction = auctionRepository.findById(auctionId).orElseThrow(() -> {
+            throw new CustomException(StatusCode.NOT_FOUND);
+        });
+        Member member = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(() -> {
+            throw new CustomException(StatusCode.NOT_FOUND);
+        });
+        if (auction.getMember() != member) throw new CustomException(StatusCode.FORBIDDEN);
+        if (!auction.getType().equals("ASK")) throw new CustomException(StatusCode.FAILED_REQUEST);
+
+        Balance balance = new Balance();
+        balance.addMember(auction.getMember());
+        balance.addProject(auction.getProject());
+
+        balanceRepository.save(balance);
+        auctionRepository.delete(auction);
+    }
+
+    @Override
+    public List<ResBalanceDto> getBalance(AuthorizerDto authorizerDto) {
+        Member member = memberRepository.findById(authorizerDto.getMemberId()).orElseThrow(() -> {
+            throw new CustomException(StatusCode.NOT_FOUND);
+        });
+
+        return balanceRepository.findAllByMember(member).stream()
+                .map(e -> e.toDto())
+                .toList();
     }
 
     @Override

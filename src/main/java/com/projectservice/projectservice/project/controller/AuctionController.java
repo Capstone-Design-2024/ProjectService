@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 import static com.projectservice.projectservice.security.JwtInfoExtractor.getAuthorizer;
 
 @RequiredArgsConstructor
@@ -25,5 +27,22 @@ public class AuctionController {
     @GetMapping("/{projectId}")
     public ResponseEntity<Message> listUpAuction(@PathVariable("projectId") Long projectId) {
         return ResponseEntity.ok(new Message(StatusCode.OK, auctionService.getAuctions(projectId)));
+    }
+
+    @PostMapping("/buy")
+    public ResponseEntity<Message> buyFromBid(@RequestBody HashMap<String, Long> auctionId) {
+        auctionService.buyBidAuction(auctionId.get("auctionId"), getAuthorizer());
+        return ResponseEntity.ok(new Message(StatusCode.OK));
+    }
+
+    @PostMapping("/sell")
+    public ResponseEntity<Message> sellFromAsk(@RequestBody HashMap<String, Long> auctionId) {
+        auctionService.sellAskAuction(auctionId.get("auctionId"), getAuthorizer());
+        return ResponseEntity.ok(new Message(StatusCode.OK));
+    }
+
+    @GetMapping("/balance")
+    public ResponseEntity<Message> checkBalance() {
+        return ResponseEntity.ok(new Message(StatusCode.OK, auctionService.getBalance(getAuthorizer())));
     }
 }
